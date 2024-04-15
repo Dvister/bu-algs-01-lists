@@ -5,7 +5,6 @@ import com.bu.algs.Reversible;
 import com.bu.algs.Sortable;
 import com.bu.algs.util.Objects;
 
-import java.util.Comparator;
 
 public class BuLinkedList<T> implements BuList<T>, Sortable, Reversible {
 
@@ -173,12 +172,79 @@ public class BuLinkedList<T> implements BuList<T>, Sortable, Reversible {
 
     @Override
     public void sort() {
-        // TODO: implement sorting
+        head = mergeSort(head);
     }
+
+    private Node<T> mergeSort(Node<T> head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+    
+        Node<T> middle = getMiddle(head);
+        Node<T> nextToMiddle = middle.next;
+        middle.next = null;
+    
+        Node<T> left = mergeSort(head);
+        Node<T> right = mergeSort(nextToMiddle);
+    
+        return merge(left, right);
+    }
+    
+    private Node<T> merge(Node<T> left, Node<T> right) {
+        Node<T> result = null;
+    
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+    
+        if (((Comparable<T>) left.elem).compareTo(right.elem) <= 0) {
+            result = left;
+            result.next = merge(left.next, right);
+        } else {
+            result = right;
+            result.next = merge(left, right.next);
+        }
+    
+        return result;
+    }
+    
+    private Node<T> getMiddle(Node<T> head) {
+        if (head == null) {
+            return head;
+        }
+    
+        Node<T> slow = head;
+        Node<T> fast = head;
+    
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+    
+        return slow;
+    }
+    
 
     @Override
     public void reverse() {
-        // TODO: implement reversing
+        if (head == null || head.next == null) {
+            return;
+        }
+    
+        Node<T> prev = null;
+        Node<T> current = head;
+        Node<T> next;
+    
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        head = prev; 
     }
 
     private static class Node<T> {
