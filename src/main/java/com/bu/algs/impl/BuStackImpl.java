@@ -1,33 +1,28 @@
 package com.bu.algs.impl;
 
 import com.bu.algs.BuStack;
-import com.bu.algs.util.Objects;
+
 
 public class BuStackImpl<T> implements BuStack<T> {
 
     private Node<T> top;
+    private int size;
 
     @Override
     public int size() {
-        int count = 0;
-        Node<T> current = top;
-        while (current != null) {
-            count++;
-            current = current.next;
-        }
-        return count;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return top == null;
+        return size == 0;
     }
 
     @Override
     public boolean contains(T elem) {
         Node<T> current = top;
         while (current != null) {
-            if (Objects.equals(elem, top.elem)) {
+            if (current.elem.equals(elem)) {
                 return true;
             }
             current = current.next;
@@ -38,27 +33,30 @@ public class BuStackImpl<T> implements BuStack<T> {
     @Override
     public void clear() {
         top = null;
+        size = 0;
     }
 
     @Override
     public T push(T item) {
         top = new Node<>(item, top);
+        size++;
         return item;
     }
 
     @Override
     public T pop() {
-        if (top == null) {
+        if (isEmpty()) {
             return null;
         }
         T result = top.elem;
         top = top.next;
+        size--;
         return result;
     }
 
     @Override
     public T peek() {
-        if (top == null) {
+        if (isEmpty()) {
             return null;
         }
         return top.elem;
@@ -69,20 +67,17 @@ public class BuStackImpl<T> implements BuStack<T> {
         int index = 0;
         Node<T> current = top;
         while (current != null) {
-            if (Objects.equals(elem, current.elem)) {
+            if (current.elem.equals(elem)) {
                 return index;
             }
             index++;
             current = current.next;
         }
-
         return -1;
     }
 
     private static class Node<T> {
-
         private final T elem;
-
         private final Node<T> next;
 
         public Node(T elem, Node<T> next) {
